@@ -172,7 +172,11 @@ public class ${serviceImplName} implements ${serviceName}{
 	//only update field want to update 
 	public void updateData(${entity.name} source, ${entity.name} target){
 #foreach( $field in $dataFields )	
+#if($field.formattedName(0) != 'deletedBy' && $field.formattedName(0) != 'deletedDate' && $field.formattedName(0) != 'createdBy'
+&& $field.formattedName(0) != 'createdDate' && $field.formattedName(0) != 'updatedDate' && $field.formattedName(0) != 'updatedBy'
+&& $field.formattedName(0) != 'deleteFlag' && $field.formattedName(0) != 'companyCode')
 		source.${field.setter}(target.${field.getter}());
+#end
 #end		
 	}
 }
