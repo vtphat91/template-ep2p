@@ -1,5 +1,5 @@
 #set( $dataFields = $entity.getAttributesByCriteria( $const.NOT_KEY, $const.NOT_IN_SELECTED_LINKS ) )
-select *
+select ROW_NUMBER() OVER(ORDER BY ACCOUNT_CODE ASC) as no,*
 from ${entity.databaseTable} tb_
 WHERE
 1=1

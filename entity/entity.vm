@@ -57,6 +57,10 @@ public class ${entity.name} extends AbstractEntityEp2p {
 #end
 	@Transient
 	private String url;
+
+	@Transient
+	private int no;
+
     //----------------------------------------------------------------------
     // CONSTRUCTOR(S)
     //----------------------------------------------------------------------
@@ -101,6 +105,14 @@ public class ${entity.name} extends AbstractEntityEp2p {
 
 	public String getUrl(){
 		return this.url;
+	}
+
+	public void setNo(int no){
+		this.no = no;
+	}
+
+	public String getNo(){
+		return this.no;
 	}
 
 }

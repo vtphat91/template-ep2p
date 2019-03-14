@@ -5,18 +5,18 @@
 #set( $entityLC = $fn.toLowerCase($entity.name) )
 #set($sizeFields = ($fn.size($dataFields) - 8 ))
 #set($count = 0)
-#set($countExport = 0)
+#set($countExport = 1)
 package ${target.javaPackageFromFolder(${SRC})};
 public enum ${entity.name}ExportEnum {
 
     //----------------------------------------------------------------------
     //  DATA FIELDS 
     //----------------------------------------------------------------------    
-
+	NO("0"),
 #foreach( $field in $dataFields )
 #if($field.formattedName(0) != 'deletedBy' && $field.formattedName(0) != 'deletedDate' && $field.formattedName(0) != 'createdBy'
 && $field.formattedName(0) != 'createdDate' && $field.formattedName(0) != 'updatedDate' && $field.formattedName(0) != 'updatedBy'
-&& $field.formattedName(0) != 'deleteFlag' && $field.formattedName(0) != 'companyCode')
+&& $field.formattedName(0) != 'deleteFlag' && $field.formattedName(0) != 'companyCode' && $field.formattedName(0) != 'no')
 #set($count = $count + 1)
 #if($count == $sizeFields)
 $fn.toUpperCase($field.formattedName(2))("$countExport");
