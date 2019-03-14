@@ -1,0 +1,69 @@
+#set( $dataFields = $entity.getAttributesByCriteria( $const.NOT_KEY, $const.NOT_IN_SELECTED_LINKS ) )
+#set( $nameLC = ${entity.name.toLowerCase()} )
+#set( $entityLC = $fn.toLowerCase($entity.name))
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<body th:fragment="content">
+	<div class="col-sm-12 no-padding">
+		<div class="section-wrap">
+			<h5 class="sub-header section-heading">
+                <i class="fa fa-table"></i>
+				<span class="bold" th:text="#{common.import.table}"> Import table</span>
+			</h5>
+			<div class="table-responsive">
+				<table id="data" class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th class="u_t_no text-center" th:text="#{common.import.row}">Row<a href="javascript:void(0)" class="pull-right"><i class="fa fa-sort sort sort-rownum" aria-hidden="true"></i></a></th>
+                            <th class="u_t_no text-center"><span th:text="#{common.import.message.error}"></span><a href="javascript:void(0)" class="pull-right"><i class="fa fa-sort sort sort-message" aria-hidden="true"></i></a></th>
+#foreach( $field in $dataFields )
+#if($field.formattedName(0) != 'deletedBy' && $field.formattedName(0) != 'deletedDate' && $field.formattedName(0) != 'createdBy'
+&& $field.formattedName(0) != 'createdDate' && $field.formattedName(0) != 'updatedDate' && $field.formattedName(0) != 'updatedBy'
+&& $field.formattedName(0) != 'deleteFlag' && $field.formattedName(0) != 'companyCode')	
+			   			<th class="u_t_code" th:text="#{${entityLC}.${field.formattedName(0)}}">$fn.toUpperCase($field.formattedName(0))</th>
+ #end	
+ #end	
+                            
+						</tr>
+					</thead>
+					<tbody>
+						<th:block th:each="item, i : ${DOLLAR}{pageWrapper.data}" th:with="startIndex=${DOLLAR}{pageWrapper.startIndexCurrent}">
+							<tr th:attr="data-temp-id=${DOLLAR}{item.id}">
+								<td class="text-center" th:text="${DOLLAR}{item.rowNum}"></td>
+                                <td class="text-center">
+                                	<th:block th:if="${DOLLAR}{item.messageType == 2}"> 
+                               	 		<span class="message-error" th:text="#{${DOLLAR}{item.messageErrorCode} }"></span> 
+                               	 	</th:block>
+                               	 	<th:block th:if="${DOLLAR}{item.messageType == 1}"> 
+                               	 		<span class="message-warning" th:text="#{${DOLLAR}{item.messageErrorCode} }"></span> 
+                               	 	</th:block>
+                               	 	<th:block th:if="${DOLLAR}{item.messageType != 1 AND item.messageType != 2}"> 
+                               	 		<span></span> 
+                               	 	</th:block>
+                                </td>
+		#foreach( $field in $dataFields )
+#if($field.formattedName(0) != 'deletedBy' && $field.formattedName(0) != 'deletedDate' && $field.formattedName(0) != 'createdBy'
+&& $field.formattedName(0) != 'createdDate' && $field.formattedName(0) != 'updatedDate' && $field.formattedName(0) != 'updatedBy'
+&& $field.formattedName(0) != 'deleteFlag' && $field.formattedName(0) != 'companyCode')
+		#if($field.jdbcTypeName == 'TIMESTAMP')
+		<td class="text-center" th:text="${DOLLAR}{item.${field.formattedName(0)}} ? ${DOLLAR}{#dates.format(item.${field.formattedName(0)}, @menuConfig.getFormDate())}"></td>
+		#else	
+		<td th:text="${DOLLAR}{item.${field.formattedName(0)}}">$fn.toUpperCase($field.formattedName(0))</td>
+		#end
+		#end
+		#end	
+							</tr>
+						</th:block>
+					</tbody>
+				</table>
+			</div>
+			<th:block th:include="views/commons/pagination.html :: content" />
+			<div class="col-sm-12 text-center" style="margin-top: 10px; margin-bottom: 10px;">
+				<a id="import" onclick="importToMasterData()" class="btn-common"><span th:text="#{common.import.button}">Import</span></a>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" th:src="@{/static/js/${nameLC}/${nameLC}-import-table.js}"></script>
+</body>
+</html>

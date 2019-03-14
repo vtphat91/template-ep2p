@@ -1,0 +1,28 @@
+#parse("/include/packages_variables.vm")
+#parse("/include/init_var_entity.vm")
+#parse("/include/java_header.vm")
+
+package ${target.javaPackageFromFolder($SRC)};
+
+import org.springframework.stereotype.Component;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
+
+/**
+ * Spring MVC ServiceImpl for '${entity.name}' management.
+ */
+
+@Component
+public class ${entity.name}Validator implements Validator {
+	
+	@Override
+    public boolean supports(Class<?> clazz) {
+        return false;
+    }
+
+    @Override
+    public void validate(Object target, Errors errors) {
+        //do validate
+    }
+
+}

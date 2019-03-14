@@ -1,0 +1,12 @@
+#parse("/include/packages_variables.vm")
+#parse("/include/init_var_entity.vm")
+#parse("/include/java_header.vm")
+package ${target.javaPackageFromFolder($SRC)};
+
+//-- Entity
+import ${entityPackage}.${entity.name}Import;
+import vn.com.unit.jcanary.repository.CommonImportExcelRepository;
+
+public interface ${entity.name}ImportRepository extends CommonImportExcelRepository<${entity.name}Import>{ 
+
+}

@@ -1,0 +1,41 @@
+#set( $nameLC = ${entity.name.toLowerCase()} )
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<script type="text/javascript" th:src="@{/static/plugins/bootbox/bootbox.js}"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var dataImport = /*[[${DOLLAR}{pageWrapper.data}]]*/ ;
+    var urlImport = /*[[${DOLLAR}{urlImport}]]*/ ;
+    var importId = /*[[${DOLLAR}{importId}]]*/ ;
+	//default value sort
+	var SORT_ROWNUM = 'ASC';
+    var SORT_MESSAGE = 'ASC';
+    var OPTION_SORT = 'DEFAULT';
+    /*]]>*/
+</script>
+
+<body th:fragment="content">
+	<div class="title-head clearfix">
+	    
+		<div class="col-sm-4 no-padding">
+			<h3>
+				<i class="fa fa-table"></i> <span  th:text="' ' + #{common.list.imported}"></span>
+			</h3>
+		</div>
+		<div class="col-sm-8 icon-head">
+            <div class="pull-right">
+                <a> <i class="fa fa-arrow-circle-left icon-head-red" id="linkList"></i> </a>
+            </div>
+       </div>
+	</div>
+
+	<div class="col-sm-12 content">
+		<div class="unit-bg-table" id="tableList">
+
+			<th:block th:include="views/${nameLC}/${nameLC}-import-table.html :: content" />
+		</div>
+	</div>
+</body>
+</html>
+

@@ -1,0 +1,20 @@
+#parse("/include/packages_variables.vm")
+#foreach( $entity in $selectedEntities )
+#set( $entityLC = $fn.toLowerCase($entity.name) )
+#set( $entityUC = $fn.toUpperCase($entity.name) )
+${SHARP} ---------- Messages for entity "$entity.name" VI  ---------- ${SHARP}
+${entityLC}=${entity.name}
+${entityLC}.list=${entityLC}s
+${entityLC}.title=$fn.firstCharToUpperCase(${entity.name})
+${entityLC}.edit.title = Edit ${entityUC}
+${entityLC}.create.title = Update ${entityUC}
+${entityLC}.detail.title = Update ${entityUC}
+#foreach( $field in ${entity.attributes} )
+#if($field.formattedName(0) != 'deletedBy' && $field.formattedName(0) != 'deletedDate' && $field.formattedName(0) != 'createdBy'
+&& $field.formattedName(0) != 'createdDate' && $field.formattedName(0) != 'updatedDate' && $field.formattedName(0) != 'updatedBy'
+&& $field.formattedName(0) != 'deleteFlag' && $field.formattedName(0) != 'companyCode')
+${entityLC}.${field.formattedName(0)}=${field.label}
+#end
+#end
+#end
+${SHARP} ---------- Messages for entity ---------- ${SHARP}

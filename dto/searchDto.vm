@@ -1,0 +1,57 @@
+#parse("/include/packages_variables.vm")
+#parse("/include/init_var_entity.vm")
+#parse("/include/java_header.vm")
+package ${target.javaPackageFromFolder(${SRC})};
+
+#foreach( $import in $java.imports($entity.attributes) )
+import $import;
+#end
+import java.util.List;
+##--------------------------------------------------------------------------------------------------------
+## Data fields = fields not in Primary Key and not in selected Links    
+#set( $dataFields = $entity.getAttributesByCriteria( $const.NOT_KEY, $const.NOT_IN_SELECTED_LINKS ) )
+##--------------------------------------------------------------------------------------------------------
+
+/**
+ * Domain class for dto "${entity.name}"
+ *
+ * @author phatvt
+ *
+ */
+public class ${entity.name}SearchDto {
+
+    //----------------------------------------------------------------------
+    //  DATA FIELDS 
+    //----------------------------------------------------------------------    
+#foreach( $field in $dataFields )
+#if($field.formattedName(0) != 'deletedBy' && $field.formattedName(0) != 'deletedDate' && $field.formattedName(0) != 'createdBy'
+&& $field.formattedName(0) != 'createdDate' && $field.formattedName(0) != 'updatedDate' && $field.formattedName(0) != 'updatedBy'
+&& $field.formattedName(0) != 'deleteFlag' && $field.formattedName(0) != 'companyCode')
+    private $field.formattedType(10) $field.formattedName(12) #if($field.hasInitialValue())= ${field.initialValue} #end;
+#end
+#end
+    //----------------------------------------------------------------------
+    // CONSTRUCTOR(S)
+    //----------------------------------------------------------------------
+    public ${entity.name}SearchDto() {
+		super();
+    }
+
+    //----------------------------------------------------------------------
+    // GETTERS & SETTERS FOR "DATA FIELDS"
+    //----------------------------------------------------------------------
+#foreach( $attribute in $dataFields )
+#if($attribute.formattedName(0) != 'deletedBy' && $attribute.formattedName(0) != 'deletedDate' && $attribute.formattedName(0) != 'createdBy'
+&& $attribute.formattedName(0) != 'createdDate' && $attribute.formattedName(0) != 'updatedDate' && $attribute.formattedName(0) != 'updatedBy'
+&& $attribute.formattedName(0) != 'deleteFlag' && $attribute.formattedName(0) != 'companyCode')
+    public void ${attribute.setter}( $attribute.type $attribute.name ) {
+        this.$attribute.name = $attribute.name ;
+    }
+    public $attribute.type ${attribute.getter}() {
+        return this.$attribute.name;
+    }
+
+#end
+#end
+
+}

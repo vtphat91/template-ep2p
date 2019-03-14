@@ -1,0 +1,118 @@
+#parse("/include/packages_variables.vm")
+#parse("/include/init_var_entity.vm")
+#parse("/include/java_header.vm")
+package ${target.javaPackageFromFolder(${SRC})};
+
+#foreach( $import in $java.imports($entity.attributes) )
+import $import;
+#end
+#set($count = 1)
+##--------------------------------------------------------------------------------------------------------
+## Data fields = fields not in Primary Key and not in selected Links    
+#set( $dataFields = $entity.getAttributesByCriteria( $const.NOT_KEY, $const.NOT_IN_SELECTED_LINKS ) )
+
+
+import org.springframework.data.annotation.Id;
+
+import jp.sf.amateras.mirage.annotation.Column;
+import jp.sf.amateras.mirage.annotation.PrimaryKey;
+import jp.sf.amateras.mirage.annotation.PrimaryKey.GenerationType;
+import jp.sf.amateras.mirage.annotation.Table;
+import jp.sf.amateras.mirage.annotation.Transient;
+import vn.com.unit.jcanary.annotation.ExcelField;
+import vn.com.unit.jcanary.entity.AbtractImportExcelEntity;
+
+/**
+ * Domain class for entity "${entity.name}"
+ *
+ * @author phatvt
+ *
+ */
+@Table(name = "${entity.databaseTable}_IMPORT")
+public class ${entity.name}Import extends AbtractImportExcelEntity{
+
+
+    //----------------------------------------------------------------------
+    // ENTITY PRIMARY KEY 
+    //----------------------------------------------------------------------
+#foreach( $field in $entity.keyAttributes )
+	@Id
+	@PrimaryKey(generationType = GenerationType.SEQUENCE, generator = "SEQ_${entity.databaseTable}_IMPORT")
+	@Column(name = "$fn.toUpperCase($field.formattedName(0))")
+    private Long $field.formattedName(0);
+#end
+
+    //----------------------------------------------------------------------
+    // ENTITY DATA FIELDS 
+    //----------------------------------------------------------------------  
+  
+#foreach( $field in $dataFields )
+#if($field.formattedName(0) != 'deletedBy' && $field.formattedName(0) != 'deletedDate' && $field.formattedName(0) != 'updatedDate'
+&& $field.formattedName(0) != 'updatedBy'&& $field.formattedName(0) != 'deleteFlag' 
+&& $field.formattedName(0) != 'companyCode' && $field.formattedName(0) != 'rowNum')
+	/** Column: $field.formattedName(0) $fn.toUpperCase(${field.databaseType})(${field.databaseSize}) */
+    @Column(name = "$field.databaseName")  
+ 	@ExcelField(colNum = ${count})
+    private $field.formattedType(0) $field.formattedName(0);
+
+#set($count = $count + 1)
+#end
+#end
+	@Column(name = "ROW_NUM")
+	private Long rowNum;
+
+	@Transient
+	private String url;
+    //----------------------------------------------------------------------
+    // CONSTRUCTOR(S)
+    //----------------------------------------------------------------------
+    public ${entity.name}Import() {
+		super();
+    }
+    
+    //----------------------------------------------------------------------
+    // GETTER & SETTER FOR "KEY FIELD(S)"
+    //----------------------------------------------------------------------
+#foreach( $attribute in $entity.keyAttributes )
+    public void ${attribute.setter}( Long $attribute.name ) {
+        this.$attribute.name = $attribute.name ;
+    }
+    public Long ${attribute.getter}() {
+        return this.$attribute.name;
+    }
+#end	
+
+    //----------------------------------------------------------------------
+    // GETTERS & SETTERS FOR "DATA FIELDS"
+    //----------------------------------------------------------------------
+#foreach( $attribute in $dataFields )
+#if($attribute.formattedName(0) != 'deletedBy' && $attribute.formattedName(0) != 'deletedDate' && $attribute.formattedName(0) != 'createdBy'
+&& $attribute.formattedName(0) != 'createdDate' && $attribute.formattedName(0) != 'updatedDate' && $attribute.formattedName(0) != 'updatedBy'
+&& $attribute.formattedName(0) != 'deleteFlag' && $attribute.formattedName(0) != 'companyCode')
+    public void ${attribute.setter}( $attribute.type $attribute.name ) {
+        this.$attribute.name = $attribute.name ;
+    } 
+
+    public $attribute.type ${attribute.getter}() {
+        return this.$attribute.name;
+    }
+
+#end
+#end
+	public void setUrl(String url){
+		this.url = url;
+	}
+
+	public String getUrl(){
+		return this.url;
+	}
+
+	public Long getRowNum() {
+		return rowNum;
+	}
+
+	public void setRowNum(Long rowNum) {
+		this.rowNum = rowNum;
+	}
+
+}

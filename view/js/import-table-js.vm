@@ -1,0 +1,61 @@
+#set( $nameLC = ${entity.name.toLowerCase()} )
+
+${DOLLAR}(function() {
+	
+	${DOLLAR}("#tableList").datatables({
+		url : BASE_URL + '${nameLC}'+ urlImport,
+		type : 'POST',
+		setData : setConditionSearch
+	});
+	
+	//on click list
+    ${DOLLAR}('#linkList').on('click', function (event) {
+        event.preventDefault();
+        var url = BASE_URL + "${nameLC}/list";
+        // Redirect to page list
+        ajaxRedirect(url);
+    });
+    
+	var isError = '';
+	var isWarn  = '';
+    //hidden btn import when error
+    if(dataImport != null && typeof dataImport !== "undefined"){
+	    dataImport.forEach(function(item){
+	    	console.log(item.messageType);
+	    	if(item.messageType == 2){
+	    		isError += 1 ;
+	    	}
+	    	if(item.messageType == 1){
+	    		isWarn += 1 ;
+	    	}
+	    })
+    }
+    if(isError > 0){
+    	${DOLLAR}('#import').hide();
+    	return;
+    }
+    if(isWarn > 0){
+    	${DOLLAR}("#import").removeAttr("onclick");
+    	${DOLLAR}('#import').click(function(event){
+    		event.preventDefault();
+	    	popupConfirm( MSG_IMPORT_CONFIRM, function(result) {
+	    		if (result) {
+	    			importToMasterData();
+	    		}			
+	    	});
+    	})
+    }
+});	
+
+function setConditionSearch() {
+	var condition = {};
+	condition["importId"] = importId;
+	return condition;
+}
+
+function importToMasterData() {
+    // on click add
+    var url = BASE_URL + "${nameLC}/saveToMasterData?importId=" + importId;
+    // Redirect to page add
+    ajaxRedirect(url);
+}

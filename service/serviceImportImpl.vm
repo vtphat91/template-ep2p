@@ -1,0 +1,70 @@
+#parse("/include/packages_variables.vm")
+#parse("/include/init_var_entity.vm")
+#parse("/include/java_header.vm")
+
+#set( $uncapitalizedEntityName = $fn.uncapitalize($entity.name) )
+#set( $repositoryName = "${entity.name}ImportRepository"	)
+
+#set( $dataFields = $entity.getAttributesByCriteria( $const.NOT_KEY, $const.NOT_IN_SELECTED_LINKS ) )
+package ${target.javaPackageFromFolder($SRC)};
+
+import java.util.List;
+import java.util.Locale;
+import vn.com.unit.jcanary.repository.CommonImportExcelRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import vn.com.unit.jcanary.config.SystemConfig;
+import vn.com.unit.ep2p.service.${entity.name}ImportService;
+import vn.com.unit.ep2p.entity.${entity.name}Import;
+
+//-- Repository
+import ${entityRepository}.${repositoryName};
+
+/*
+ * Spring MVC ServiceImpl for '${entity.name}' management.
+ */
+
+@Service
+@Transactional(readOnly = true, rollbackFor = Exception.class)
+public class ${entity.name}ImportServiceImpl implements ${entity.name}ImportService {
+
+	@Autowired
+    private ${repositoryName} repository;
+    
+    @Autowired
+    private SystemConfig systemConfig;
+
+ 	 @Override
+    public SystemConfig getSystemConfig() {
+        return systemConfig;
+    }
+    
+    @SuppressWarnings("rawtypes")
+    @Override
+    @Transactional
+    public CommonImportExcelRepository getCommonImportExcelRepository() {
+        return repository;
+    }
+
+	/** save data to table import*/
+    @Override
+	@Transactional
+    public void saveLstData(List<${entity.name}Import> listData) {
+        listData.forEach(item -> {
+        	item.setCreatedBy(UserProfileUtils.getUserNameLogin());
+        	item.setCreatedDate(new Date());
+        	repository.save(item);
+        });
+    }
+
+	/** validate data import*/
+    @Override
+    public List<${entity.name}Import> validate(List<${entity.name}Import> lstT, Locale locale) throws Exception {
+        for (${entity.name}Import item : lstT) {
+			//do validate
+        }
+        return lstT;
+    }
+
+}
