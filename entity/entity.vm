@@ -111,7 +111,7 @@ public class ${entity.name} extends AbstractEntityEp2p {
 		this.no = no;
 	}
 
-	public String getNo(){
+	public int getNo(){
 		return this.no;
 	}
 
